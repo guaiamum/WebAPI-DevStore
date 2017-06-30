@@ -17,7 +17,7 @@ namespace DevStore.Api
             config.Formatters.Remove(config.Formatters.XmlFormatter); //removendo XML
             settings.Formatting = Formatting.Indented; //formatacao na visualizacao
             settings.ContractResolver = new CamelCasePropertyNamesContractResolver(); //propriedades em minusculas
-            //config.EnableCors();
+            config.EnableCors();
 
             // Web API routes
             config.MapHttpAttributeRoutes();
