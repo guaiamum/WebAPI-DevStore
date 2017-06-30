@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DevStore.Domain
+﻿namespace DevStore.Domain
 {
     public class Category
     {
