@@ -7,7 +7,7 @@ namespace DevStore.Infra.DataContexts
     public class DevStoreDataContext : DbContext
     {
         public DevStoreDataContext() 
-            : base("DevStoreConnectionString")
+            : base("DevStore")
         {
             Database.SetInitializer<DevStoreDataContext>(new DevStoreDataContextInitializer());
         }

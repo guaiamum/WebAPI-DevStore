@@ -13,6 +13,8 @@ namespace DevStore.Domain
 
         public String Title { get; set; }
 
+        //public String Description { get; set; }
+
         public decimal Price { get; set; }
 
         public DateTime AcquiredDate { get; set; }
