@@ -10,6 +10,7 @@ namespace DevStore.Infra.DataContexts
             : base("DevStore")
         {
             Database.SetInitializer<DevStoreDataContext>(new DevStoreDataContextInitializer());
+            Configuration.LazyLoadingEnabled = false; //desabilita vinda automatica de referencia
         }
 
         public DbSet<Product> Products { get; set; }

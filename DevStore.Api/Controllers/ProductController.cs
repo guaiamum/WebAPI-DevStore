@@ -16,7 +16,7 @@ namespace DevStore.Api.Controllers
         // GET: api/Product
         public IQueryable<Product> GetProducts()
         {
-            return db.Products;
+            return db.Products.Include("Category");
         }
 
         // GET: api/Product/5
