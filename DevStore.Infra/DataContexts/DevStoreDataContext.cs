@@ -11,6 +11,7 @@ namespace DevStore.Infra.DataContexts
         {
             Database.SetInitializer<DevStoreDataContext>(new DevStoreDataContextInitializer());
             Configuration.LazyLoadingEnabled = false; //desabilita vinda automatica de referencia
+            Configuration.ProxyCreationEnabled = false; //
         }
 
         public DbSet<Product> Products { get; set; }
