@@ -1,115 +1,66 @@
 ﻿using DevStore.Domain;
 using DevStore.Infra.DataContexts;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 
 namespace DevStore.Api.Controllers
 {
+    [RoutePrefix("api/v1")]
     public class ProductController : ApiController
     {
         private DevStoreDataContext db = new DevStoreDataContext();
 
-        // GET: api/Product
-        public IQueryable<Product> GetProducts()
+
+        [Route("products")]
+        public HttpResponseMessage GetProducts()
         {
-            return db.Products.Include("Category");
+            var result = db.Products.Include("Category").ToList();
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        // GET: api/Product/5
-        [ResponseType(typeof(Product))]
-        public IHttpActionResult GetProduct(int id)
+        
+
+        [Route("categories/{categoryId}/products")]
+        public HttpResponseMessage GetProductsByCategory(int categoryId)
         {
-            Product product = db.Products.Find(id);
+            var result = db.Products.Include("Category").Where(e => e.CategoryId == categoryId).ToList();
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [HttpPost]
+        [Route("products")]
+        public HttpResponseMessage PostProduct(Product product)
+        {
             if (product == null)
             {
-                return NotFound();
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-
-            return Ok(product);
-        }
-
-        // PUT: api/Product/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutProduct(int id, Product product)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(product).State = EntityState.Modified;
 
             try
             {
+                db.Products.Add(product);
                 db.SaveChanges();
+
+                var result = product;
+                return Request.CreateResponse(HttpStatusCode.OK, result);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                var result = e.Message; //"Falha ao cadastrar produto"
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, result);
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST: api/Product
-        [ResponseType(typeof(Product))]
-        public IHttpActionResult PostProduct(Product product)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Products.Add(product);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = product.Id }, product);
-        }
-
-        // DELETE: api/Product/5
-        [ResponseType(typeof(Product))]
-        public IHttpActionResult DeleteProduct(int id)
-        {
-            Product product = db.Products.Find(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            db.Products.Remove(product);
-            db.SaveChanges();
-
-            return Ok(product);
+            
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            db.Dispose();
         }
 
-        private bool ProductExists(int id)
-        {
-            return db.Products.Count(e => e.Id == id) > 0;
-        }
+    
     }
 }
