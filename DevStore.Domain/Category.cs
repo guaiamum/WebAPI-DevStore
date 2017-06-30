@@ -1,4 +1,6 @@
-﻿namespace DevStore.Domain
+﻿using System;
+
+namespace DevStore.Domain
 {
     public class Category
     {
